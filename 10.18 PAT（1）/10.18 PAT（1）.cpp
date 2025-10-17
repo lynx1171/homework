@@ -1,68 +1,41 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
-#include <iostream>
-#include <stdbool.h>
-#define max_size 20000
-int o = 0;
-typedef struct {
-	int data[max_size];
-	int front;
-	int rear;
-}stack;
+#include <stdio.h>
+#include <string.h>
 
-bool isempty(stack* S) {
-	if (S->front == S->rear) return 1;
-	else return 0;
+const int maxm = 1e5 + 10;
+
+void buildNext(char* P, int next[], int m) {
+    int k = next[0] = -1;
+    for (int j = 0; j < m - 1; j++) {
+        while (k >= 0 && P[k] != P[j])
+            k = next[k];
+        next[j + 1] = ++k;
+    }
 }
 
-void push(stack* S, int n) {
-	S->data[S->rear] = n;
-	S->rear++;
+int KMP(char* S, char* P, int n, int m) {
+    int next[maxm], i = 0, j = 0;
+    buildNext(P, next, m);
+    while (j < m && i < n) {
+        if (j == -1 || S[i] == P[j]) i++, j++;
+        else j = next[j];
+    }
+    return (j == m) ? i - m : -1;
 }
 
-int pop(stack* S, int P[]) {
-	if (isempty(S)) {
-		o++;
-		return -1;
-
-	}
-	P[o] = S->data[S->front];
-	o++;
-	S->front++;
-	return 1;
-}
-
-void chushihua(stack* S) {
-	S->front = 0;
-	S->rear = 0;
-
-}
-int main()
-{
-	stack S;
-	chushihua(&S);
-	int m, n, num, k;
-	k = 0;
-	int popnum[20000];
-	int istrue[20000];
-	scanf("%d", &m);
-	for (int i = 0; i < m; i++) {
-		scanf("%d", &num);
-		if (num == 1) {
-			scanf("%d", &n);
-			push(&S, n);
-		}
-		if (num == 0) {
-			istrue[k] = pop(&S, popnum);
-			k++;
-		}
-	}
-	for (int i = 0; i <= o; i++) {
-		if (istrue[i] == -1) {
-			printf("invalid\n");
-		}
-		if (istrue[i] == 1) {
-			printf("%d\n", popnum[i]);
-		}
-	}
-
+int main() {
+    char s[100001], p[100001];
+    scanf("%s", s);
+    scanf("%s", p);
+    int n = strlen(s);
+    int m = strlen(p);
+    int next[maxm];
+    buildNext(p, next, m);
+    int num1 = m / 4;
+    int num2 = 2 * m / 4;
+    int num3 = 3 * m / 4;
+    printf("%d %d %d \n", next[num1], next[num2], next[num3]);
+    int a = KMP(s, p, n, m);
+    printf("%d", a);
+    return 0;
 }
