@@ -5,17 +5,18 @@
 int o = 0;
 typedef struct {
 	int data[max_size];
-	int top;
+	int front;
+	int rear;
 }stack;
 
 bool isempty(stack* S) {
-	if (S->top == -1) return 1;
+	if (S->front == S->rear) return 1;
 	else return 0;
 }
 
 void push(stack* S, int n) {
-	S->top++;
-	S->data[S->top] = n;
+	S->data[S->rear] = n;
+	S->rear++;
 }
 
 int pop(stack* S, int P[]) {
@@ -24,14 +25,16 @@ int pop(stack* S, int P[]) {
 		return -1;
 
 	}
-	P[o] = S->data[S->top];
+	P[o] = S->data[S->front];
 	o++;
-	S->top--;
+	S->front++;
 	return 1;
 }
 
 void chushihua(stack* S) {
-	S->top = -1;
+	S->front = 0;
+	S->rear = 0;
+
 }
 int main()
 {
