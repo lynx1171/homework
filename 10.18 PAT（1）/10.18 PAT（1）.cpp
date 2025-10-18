@@ -2,40 +2,70 @@
 #include <stdio.h>
 #include <string.h>
 
-const int maxm = 1e5 + 10;
-
-void buildNext(char* P, int next[], int m) {
-    int k = next[0] = -1;
-    for (int j = 0; j < m - 1; j++) {
-        while (k >= 0 && P[k] != P[j])
-            k = next[k];
-        next[j + 1] = ++k;
-    }
+int youxianjii(char c) {
+	switch (c) {
+	case('<'): return 1;
+	case('('): return 2;
+	case('['): return 3;
+	case('{'): return 4;
+		default: return 0;
+	}
 }
 
-int KMP(char* S, char* P, int n, int m) {
-    int next[maxm], i = 0, j = 0;
-    buildNext(P, next, m);
-    while (j < m && i < n) {
-        if (j == -1 || S[i] == P[j]) i++, j++;
-        else j = next[j];
-    }
-    return (j == m) ? i - m : -1;
+int if_match(char prv, char nex) {
+	if (prv == '<' && nex == '>') return 1;
+	if (prv == '(' && nex == ')') return 1;
+	if (prv == '[' && nex == ']') return 1;
+	if (prv == '{' && nex == '}') return 1;
+	return 0;
 }
 
 int main() {
-    char s[100001], p[100001];
-    scanf("%s", s);
-    scanf("%s", p);
-    int n = strlen(s);
-    int m = strlen(p);
-    int next[maxm];
-    buildNext(p, next, m);
-    int num1 = m / 4;
-    int num2 = 2 * m / 4;
-    int num3 = 3 * m / 4;
-    printf("%d %d %d \n", next[num1], next[num2], next[num3]);
-    int a = KMP(s, p, n, m);
-    printf("%d", a);
+	int n;
+	scanf("%d", &n);
+	char stack_c[1001];
+	int youxianji[1001];
+	int top = -1;
+	char prv, nex;
+	int flag = 0;
+	for (int i = 0; i < n; i++) {
+		char tmp[1001];
+		scanf("%s", tmp);
+		top = -1;
+		for (int k = 0; tmp[k] != '\0'; k++) {
+			prv = tmp[k];
+			if (prv == '{' || prv == '<' || prv == '[' || prv == '(') {
+				top++;
+				stack_c[top] = prv;
+				youxianji[top] = youxianjii(prv);
+				if (top != 0) {
+					if(youxianji[top] > youxianji[top - 1]){
+						flag = 0;
+						break;
+					}
+				}
+			}
+			if (prv == '}' || prv == '>' || prv == ']' || prv == ')') {
+				if (top == -1 || stack_c[top] != prv) {
+					flag = 0;
+					break;
+				}
+				if (stack_c[top] == prv) {
+					flag = 1;
+					top--;
+				}
+				
+			}
+			
+		}
+		if (flag == 1) {
+			printf("Match\n");
+		}
+		if (flag == 0) {
+			printf("Fail\n");
+		}
+		
+	}
+
     return 0;
 }
