@@ -39,18 +39,18 @@ int main() {
 				stack_c[top] = prv;
 				youxianji[top] = youxianjii(prv);
 				if (top != 0) {
-					if(youxianji[top] > youxianji[top - 1]){
+					if(youxianji[top] >= youxianji[top - 1]){
 						flag = 0;
 						break;
 					}
 				}
 			}
 			if (prv == '}' || prv == '>' || prv == ']' || prv == ')') {
-				if (top == -1 || stack_c[top] != prv) {
+				if (top == -1 || !if_match(stack_c[top], prv)) {
 					flag = 0;
 					break;
 				}
-				if (stack_c[top] == prv) {
+				if (top!=-1||if_match(stack_c[top], prv)) {
 					flag = 1;
 					top--;
 				}
@@ -58,12 +58,12 @@ int main() {
 			}
 			
 		}
-		if (flag == 1) {
-			printf("Match\n");
-		}
-		if (flag == 0) {
-			printf("Fail\n");
-		}
+		if (flag == 1&&top==-1) {
+				printf("Match\n");
+			}
+		else {
+				printf("Fail\n");
+			}
 		
 	}
 
